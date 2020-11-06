@@ -50,9 +50,44 @@ class Author {
 			return result
 		}
 	}
+}
 
-	serialize() {
-		return JSON.stringify(this)
+class Editor {
+	constructor(firstNameInitials, lastName, companyName) {
+
+		this.properties = {
+			firstNameInitials: {
+				label: "First and middle name initials",
+				value: firstNameInitials || ""
+			},
+			lastName: {
+				label: "Last name",
+				value: lastName || ""
+			}
+		};
+	}
+
+	render() {
+		return (
+			this.properties.lastName.value + ", " + this.properties.firstNameInitials.value
+		);
+	}
+
+	combinationFn(store, context) {
+		if (store.length == 1) {
+			return store[0].properties.lastName.value + ", " + store[0].properties.firstNameInitials.value + ", ed."
+		} else {
+			let result = ""
+			for (var i = 0; i < store.length ; i++) {
+				if (i > 0 && i != store.length - 1) {
+					result += ", "
+				} else if (i == store.length - 1) {
+					result += " and "
+                }
+				result += store[i].properties.lastName.value + ", " + store[i].properties.firstNameInitials.value
+            }
+			return result +  ", eds."
+		}
 	}
 }
 
@@ -62,7 +97,7 @@ class DateProp {
 			day: {
 				label: "Day",
 				value: day || "",
-				example: "23 without the rd"
+				example: "e.g. 23 without the rd"
 			},
 			month: {
 				label: "Month",
@@ -93,8 +128,31 @@ class DateProp {
 
 	render() {
 		return (
-			this.ordinal_suffix_of(this.properties.day.value) + " " + this.properties.month.value + " " + this.properties.year.value
+			this.properties.day.value + " " + this.properties.month.value + " " + this.properties.year.value
 		);
+	}
+}
+
+class Pages {
+	constructor(pages) {
+		this.properties = {
+			value: {
+				label: "Pages",
+				value: pages || "",
+			}
+		};
+	}
+
+	render() {
+		if (this.properties.value.value.includes("-") || this.properties.value.value.includes(",")) {
+			return (
+				"pp." + this.properties.value.value
+			)
+		} else {
+			return (
+				"p." + this.properties.value.value
+			);
+        }
 	}
 }
 
@@ -115,10 +173,121 @@ class Value {
 	}
 }
 
+class PlaceOfPublication {
+	constructor() {
+		this.properties = {
+			value: {
+				label: "if known",
+				value: null,
+			}
+		};
+	}
+
+	render() {
+		if (this.properties.value.value) {
+			return (
+				this.properties.value.value + ": "
+			);
+		} else {
+			return ""
+        }
+	}
+}
+
+class Volume {
+	constructor(vol, subtitle) {
+		this.properties = {
+			vol: {
+				label: "Volume",
+				value: vol || ""
+			},
+			subtitle: {
+				label: "Subtitle (if present)",
+				value: subtitle || ""
+			}
+		};
+	}
+
+	render() {
+		if (this.properties.subtitle) {
+			return (
+				"Vol. " + this.properties.vol.value + ", " + this.properties.subtitle.value
+			);
+		} else {
+			return (
+				"Vol. " + this.properties.vol.value
+			);
+		}
+	}
+}
+
+class JournalVolume {
+	constructor(part, issue) {
+		this.properties = {
+			part: {
+				label: "Part",
+				value: part|| ""
+			},
+			issue: {
+				label: "Issue",
+				value: issue || ""
+			}
+		};
+	}
+
+	render() {
+		return (
+			this.properties.part.value + "  (" + this.properties.issue.value + ")"
+		);
+	}
+}
+
+class Edition {
+	constructor(ed) {
+		this.properties = {
+			edition: {
+				label: "",
+				value: ed || "",
+			}
+		};
+	}
+
+	ordinal_suffix_of(i) {
+		var j = i % 10,
+			k = i % 100;
+		if (j == 1 && k != 11) {
+			return i + "st";
+		}
+		if (j == 2 && k != 12) {
+			return i + "nd";
+		}
+		if (j == 3 && k != 13) {
+			return i + "rd";
+		}
+		return i + "th";
+	}
+
+	render() {
+		if (this.properties.edition.value) {
+			return (
+				this.ordinal_suffix_of(this.properties.edition.value) + " ed. "
+			);
+		} else {
+			return ""
+        }
+	}
+}
+
 let contentTypes = {
 	Author,
 	DateProp,
-	Value
+	Pages,
+	Volume,
+	Value,
+	Edition,
+	Editor,
+	JournalVolume,
+	PlaceOfPublication
 }
 
 let types = {
@@ -210,103 +379,862 @@ let types = {
 		type: "Acts of Parliament (Statutes) post-1963",
 		subtype: "Print",
 		label: "[PLP-P] Acts of Parliament (Statutes) post-1963 (Print)",
-		tooltips: ["PLP", "P"]
+		tooltips: ["PLP", "P"],
+		schema: {
+			name: {
+				type: "Value",
+				label: "Name of Act",
+				store: new Value()
+			},
+			year: {
+				type: "Value",
+				label: "Year",
+				store: new Value()
+			},
+			chapterNo: {
+				type: "Value",
+				label: "Chapter number",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `<i>{{name}} {{year}}. Chapter {{chapterNo}}.</i> ({{year}})) {{publicationPlace}}: {{publisher}}`,
+			inline: `<i>{{name}}</i> ({{year}})`
+		}
 	},
 	"PLP-E": {
 		type: "Acts of Parliament (Statutes) post-1963",
 		subtype: "Electronic",
 		label: "[PLP-E] Acts of Parliament (Statutes) post-1963 (Electronic)",
-		tooltips: ["PLP", "E"]
+		tooltips: ["PLP", "E"],
+		schema: {
+			name: {
+				type: "Value",
+				label: "Name of Act",
+				store: new Value()
+			},
+			year: {
+				type: "Value",
+				label: "Year",
+				store: new Value()
+			},
+			chapterNo: {
+				type: "Value",
+				label: "Chapter number",
+				store: new Value()
+			},
+			websiteName: {
+				type: "Value",
+				label: "Name of website",
+				store: new Value()
+			},
+			url: {
+				type: "Value",
+				label: "URL",
+				store: new Value()
+			},
+			date: {
+				type: "DateProp",
+				label: "Date accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `<i>{{name}} {{year}}. Chapter {{chapterNo}}.</i> ({{year}})) {{websiteName}}. Available from: {{url}} [Accessed {{date}}].`,
+			inline: `<i>{{name}}</i> ({{year}})`
+		}
 	},
 	"A-GL": {
 		type: "Works of art",
 		subtype: "In gallery/institution",
 		label: "[A-GL] Works of art (In gallery/institution)",
-		tooltips: ["A", "GL"]
+		tooltips: ["A", "GL"],
+		schema: {
+			artist: {
+				type: "Author",
+				label: "Artists",
+				store: []
+			},
+			dateCreated: {
+				type: "Value",
+				label: "Date of creation",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title of work",
+				store: new Value()
+			},
+			medium: {
+				type: "Value",
+				label: "Medium",
+				store: new Value()
+			},
+			loc: {
+				type: "Value",
+				label: "Geographic location where work is housed",
+				store: new Value()
+			},
+			institution: {
+				type: "Value",
+				label: "nstitution or collection that houses the work",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `{{author}} ({{dateCreated}}) <i>{{title}}</i> [{{medium}}]. At: {{loc}}: {{institution}}`,
+			inline: `<i>{{title}}</i> ({{year}})`
+		}
 	},
 	"BL": {
 		type: "Blogs",
 		subtype: "",
 		label: "[BL] Blogs ",
-		tooltips: ["BL"]
+		tooltips: ["BL"],
+		schema: {
+			author: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title of blog entry",
+				store: new Value()
+			},
+			blog: {
+				type: "Value",
+				label: "Title of the blog",
+				store: new Value()
+			},
+			date: {
+				type: "DateProp",
+				label: "Day and month of publication (year not required)",
+				store: new DateProp()
+			},
+			url: {
+				type: "Value",
+				label: "URL",
+				store: new Value()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Date accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `{{author}} ({{year}}) {{title}}. <i>{{blog}}</i> [blog]. {{date}}. Available from: {{url}} [Accessed {{accessed}}].`,
+			inline: `{{author}} ({{year}})`
+		}
 	},
 	"BC-P": {
 		type: "Book chapters",
 		subtype: "Print",
 		label: "[BC-P] Book chapters (Print)",
-		tooltips: ["BC", "P"]
+		tooltips: ["BC", "P"],
+		schema: {
+			author: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication of chapter",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Book chapter title",
+				store: new Value()
+			},
+			editors: {
+				type: "Editor",
+				label: "Editors",
+				store: []
+			},
+			yearBook: {
+				type: "Value",
+				label: "Year of publication of book",
+				store: new Value()
+			},
+			titleBook: {
+				type: "Value",
+				label: "Title of book",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			},
+			pages: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			}
+		},
+		formats: {
+			reference: `{{author}} ({{year}}) {{title}}. In: {{bookAuthor}}, ed., ({{yearBook}}) <i>{{titleBook}}</i>. {{publicationPlace}}: {{publisher}}, {{pages}}.`,
+			inline: `{{author}} ({{year}})`
+		}
 	},
 	"BC-E": {
 		type: "Book chapters",
 		subtype: "Electronic",
 		label: "[BC-E] Book chapters (Electronic)",
-		tooltips: ["BC", "E"]
+		tooltips: ["BC", "E"],
+		schema: {
+			author: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication of chapter",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Book chapter title",
+				store: new Value()
+			},
+			editors: {
+				type: "Editor",
+				label: "Editors",
+				store: []
+			},
+			yearBook: {
+				type: "Value",
+				label: "Year of publication of book",
+				store: new Value()
+			},
+			titleBook: {
+				type: "Value",
+				label: "Title of book",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			},
+			pages: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `{{author}} ({{year}}) {{title}}. In: {{editors}}, ({{yearBook}}) <i>{{titleBook}}</i> [online]. {{publicationPlace}}: {{publisher}}, {{pages}}. [Accessed {{accessed}}]`,
+			inline: `{{author}} ({{year}}, {{pages}})`
+		}
 	},
 	"BC-MV": {
 		type: "Book chapters",
 		subtype: "part of Multi-volume work",
 		label: "[BC-MV] Book chapters (part of Multi-volume work)",
-		tooltips: ["BC", "MV"]
+		tooltips: ["BC", "MV"],
+		schema: {
+			author: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication of chapter",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Book chapter title",
+				store: new Value()
+			},
+			editors: {
+				type: "Editor",
+				label: "Editors",
+				store: []
+			},
+			yearBook: {
+				type: "Value",
+				label: "Year of publication of book",
+				store: new Value()
+			},
+			titleBook: {
+				type: "Value",
+				label: "Title of book",
+				store: new Value()
+			},
+			volume: {
+				type: "Volume",
+				label: "Volume",
+				store: new Volume()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			},
+			pages: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			}
+		},
+		formats: {
+			reference: `{{author}} ({{year}}) {{title}}. In: {{editors}}, ({{yearBook}}) <i>{{titleBook}}</i>: {{volume}}. {{publicationPlace}}: {{publisher}}, {{pages}}.`,
+			inline: `{{author}} ({{year}})`
+		}
 	},
 	"BC-DR": {
 		type: "Book chapters",
 		subtype: "Digital Repository",
 		label: "[BC-DR] Book chapters (Digital Repository)",
-		tooltips: ["BC", "DR"]
+		tooltips: ["BC", "DR"],
+		schema: {
+			author: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication of chapter",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Book chapter title",
+				store: new Value()
+			},
+			editors: {
+				type: "Editor",
+				label: "Editors",
+				store: []
+			},
+			yearBook: {
+				type: "Value",
+				label: "Year of publication of book",
+				store: new Value()
+			},
+			titleBook: {
+				type: "Value",
+				label: "Title of book",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			},
+			pages: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `{{author}} ({{year}}) {{title}}. In: {{editors}}, ({{yearBook}}) <i>{{titleBook}}</i> [online]. {{publicationPlace}}: {{publisher}}, {{pages}}. [Accessed {{accessed}}]`,
+			inline: `{{author}} ({{year}})`
+		}
 	},
 	"B": {
 		type: "Books",
 		subtype: "",
 		label: "[B] Books ",
-		tooltips: ["B"]
+		tooltips: ["B"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title",
+				store: new Value()
+			},
+			edition: {
+				type: "Edition",
+				label: "Edition (if not first)",
+				store: new Edition()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) <i>{{title}}</i>. {{edition}}{{publicationPlace}}: {{publisher}}`,
+			inline: `({{authors}}, {{year}})`
+		}
 	},
 	"B-R": {
 		type: "Books",
 		subtype: "Reprint",
 		label: "[B-R] Books (Reprint)",
-		tooltips: ["B", "R"]
+		tooltips: ["B", "R"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			},
+			yearRepublished: {
+				type: "Value",
+				label: "Year reprint published",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) <i>{{title}}</i>. Reprint. {{publicationPlace}}: {{publisher}}, {{yearRepublished}}`,
+			inline: `({{authors}}, {{year}})`
+		}
 	},
 	"B-T": {
 		type: "Books",
 		subtype: "Translation",
 		label: "[B-T] Books (Translation)",
-		tooltips: ["B", "T"]
+		tooltips: ["B", "T"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication of the translation",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title",
+				store: new Value()
+			},
+			lang: {
+				type: "Value",
+				label: "Original language",
+				store: new Value()
+			},
+			translatorFirstName: {
+				type: "Value",
+				label: "First name of translator",
+				store: new Value()
+			},
+			translatorSurname: {
+				type: "Value",
+				label: "Last name of translator",
+				store: new Value()
+			},
+			edition: {
+				type: "Edition",
+				label: "Edition (if not first)",
+				store: new Edition()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) <i>{{title}}</i>. Translated from {{lang}} by {{translatorFirstName}} {{translatorSurname}}. {{publicationPlace}}: {{publisher}}.`,
+			inline: `({{authors}}, {{year}})`
+		}
 	},
 	"B-MVB": {
 		type: "Books",
 		subtype: "Multi-volume books",
 		label: "[B-MVB] Books (Multi-volume books)",
-		tooltips: ["B", "MVB"]
+		tooltips: ["B", "MVB"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title",
+				store: new Value()
+			},
+			vols: {
+				type: "Value",
+				label: "Number of volumes",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) <i>{{title}}</i> ({{vols}} vols.). {{publicationPlace}}: {{publisher}}`,
+			inline: `({{authors}}, {{year}})`
+		}
 	},
 	"B-ATH": {
 		type: "Books",
 		subtype: "Anthologies",
 		label: "[B-ATH] Books (Anthologies)",
-		tooltips: ["B", "ATH"]
+		tooltips: ["B", "ATH"],
+		schema: {
+			editors: {
+				type: "Editor",
+				label: "Authors (editors)",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `{{editors}} ({{year}}) <i>{{title}}</i>. {{publicationPlace}}: {{publisher}}.`,
+			inline: `{{editors}} ({{year}})`
+		}
 	},
 	"B-K": {
 		type: "Books",
 		subtype: "Electronic book device, e.g. Kindle",
 		label: "[B-K] Books (Electronic book device, e.g. Kindle)",
-		tooltips: ["B", "K"]
+		tooltips: ["B", "K"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) <i>{{title}}</i>. Kindle ed. {{publicationPlace}}: {{publisher}}`,
+			inline: `({{authors}}, {{year}})`
+		}
 	},
 	"B-F": {
 		type: "Books",
 		subtype: "Electronic reference book, incl. dictionaries",
 		label: "[B-F] Books (Electronic reference book, incl. dictionaries)",
-		tooltips: ["B", "F"]
+		tooltips: ["B", "F"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			titleCS: {
+				type: "Value",
+				label: "Title of chapter or section",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title",
+				store: new Value()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) {{titleCS}}. In: <i>{{title}}</i> [online]. [Accessed {{accessed}}].`,
+			inline: `({{authors}}, {{year}})`
+		}
+	},
+	"B-DR": {
+		type: "Books",
+		subtype: "Digital repositories",
+		label: "[B-DR] Books in digital repositories",
+		tooltips: ["B", "DR"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "Value",
+				label: "Place of publication",
+				store: new Value()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			},
+			repo: {
+				type: "Value",
+				label: "Name of digital repository",
+				store: new Value()
+			},
+			url: {
+				type: "Value",
+				label: "URL",
+				store: new Value()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) <i>{{title}}</i>. {{publicationPlace}}: {{publisher}}. {{repo}} [online]. Available from: {{url}} [Accessed {{accessed}}].`,
+			inline: `({{authors}}, {{year}})`
+		}
 	},
 	"CN-P": {
 		type: "Censuses",
 		subtype: "Print",
 		label: "[CN-P] Censuses (Print)",
-		tooltips: ["CN", "P"]
+		tooltips: ["CN", "P"],
+		schema: {
+			nameOfPerson: {
+				type: "Value",
+				label: "Name of person",
+				store: new Value()
+			},
+			year: {
+				type: "Value",
+				label: "Year of census",
+				store: new Value()
+			},
+			detailsOfCensus: {
+				type: "Value",
+				label: "Details of census",
+				store: new Value()
+			},
+			pieceNumber: {
+				type: "Value",
+				label: "Piece number",
+				store: new Value()
+			},
+			folioNumber: {
+				type: "Value",
+				label: "Folio number",
+				store: new Value()
+			},
+			pageNumber: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			}
+		},
+		formats: {
+			reference: `'{{nameOfPerson}}' ({{year}}) <i>{{detailsOfCensus}}</i>. Public Record Office: {{pieceNumber}}, folio {{folioNumber}}, {{pageNumber}}.`,
+			inline: `('{{nameOfPerson}}' {{year}})`
+		}
 	},
 	"CN-E": {
 		type: "Censuses",
 		subtype: "Electronic",
 		label: "[CN-E] Censuses (Electronic)",
-		tooltips: ["CN", "E"]
+		tooltips: ["CN", "E"],
+		schema: {
+			nameOfPerson: {
+				type: "Value",
+				label: "Name of person",
+				store: new Value()
+			},
+			year: {
+				type: "Value",
+				label: "Year of census",
+				store: new Value()
+			},
+			detailsOfCensus: {
+				type: "Value",
+				label: "Details of census",
+				store: new Value()
+			},
+			pieceNumber: {
+				type: "Value",
+				label: "Piece number",
+				store: new Value()
+			},
+			folioNumber: {
+				type: "Value",
+				label: "Folio number",
+				store: new Value()
+			},
+			pageNumber: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			},
+			website: {
+				type: "Value",
+				label: "Name of website",
+				store: new Value()
+			},
+			yearLastUpdate: {
+				type: "Value",
+				label: "Year of last update",
+				store: new Value()
+			},
+			url: {
+				type: "Value",
+				label: "URL",
+				store: new Value()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Date accessed",
+				store: new DateProp()
+			},
+		},
+		formats: {
+			reference: `'{{nameOfPerson}}' ({{year}}) <i>{{detailsOfCensus}}</i> [online]. Public Record Office: {{pieceNumber}}, folio {{folioNumber}}, {{pageNumber}}. {{website}} ({{yearLastUpdate}}). Available from: {{url}} [Accessed {{accessed}}].`,
+			inline: `('{{nameOfPerson}}' {{year}})`
+		}
 	},
 	"CR": {
 		type: "Cochrane reviews",
@@ -330,13 +1258,110 @@ let types = {
 		type: "Conference papers and proceedings",
 		subtype: "Papers",
 		label: "[C-PP] Conference papers and proceedings (Papers)",
-		tooltips: ["C", "PP"]
+		tooltips: ["C", "PP"],
+		schema: {
+			author: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title of conference paper/contribution",
+				store: new Value()
+			},
+			editors: {
+				type: "Editor",
+				label: "Editors",
+				store: []
+			},
+			titleConf: {
+				type: "Value",
+				label: "Title of conference proceedings",
+				store: new Value()
+			},
+			placeConf: {
+				type: "Value",
+				label: "Place of conference",
+				store: new Value()
+			},
+			dateConf: {
+				type: "Value",
+				label: "Date(s) of conference",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "PlaceOfPublication",
+				label: "Place of publication",
+				store: new PlaceOfPublication()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			},
+			pages: {
+				type: "Pages",
+				label: "Page numbers",
+				store: new Pages()
+			}
+		},
+		formats: {
+			reference: `{{author}} ({{year}}) {{title}}. In: {{editors}}, <i>{{titleConf}}</i>. {{placeConf}}, {{dateConf}}. {{publicationPlace}}{{publisher}}, {{pages}}.`,
+			inline: `{{author}} ({{year}})`
+		}
 	},
 	"C-PROC": {
 		type: "Conference papers and proceedings",
 		subtype: "Proceedings",
 		label: "[C-PROC] Conference papers and proceedings (Proceedings)",
-		tooltips: ["C", "PROC"]
+		tooltips: ["C", "PROC"],
+		schema: {
+			editors: {
+				type: "Editor",
+				label: "Editors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year",
+				store: new Value()
+			},
+			titleConf: {
+				type: "Value",
+				label: "Title of conference proceedings",
+				store: new Value()
+			},
+			placeConf: {
+				type: "Value",
+				label: "Place of conference",
+				store: new Value()
+			},
+			dateConf: {
+				type: "Value",
+				label: "Date(s) of conference",
+				store: new Value()
+			},
+			publicationPlace: {
+				type: "PlaceOfPublication",
+				label: "Place of publication",
+				store: new PlaceOfPublication()
+			},
+			publisher: {
+				type: "Value",
+				label: "Publisher",
+				store: new Value()
+			}
+		},
+		formats: {
+			reference: `{{editors}} ({{year}}) <i>{{titleConf}}</i>, {{placeConf}}, {{dateConf}}. {{publicationPlace}}{{publisher}}.`,
+			inline: `{{editors}} ({{year}})`
+		}
 	},
 	"C-PON": {
 		type: "Conference papers and proceedings",
@@ -450,25 +1475,199 @@ let types = {
 		type: "Journal articles",
 		subtype: "Print",
 		label: "[J-P] Journal articles (Print)",
-		tooltips: ["J", "P"]
+		tooltips: ["J", "P"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title of the article",
+				store: new Value()
+			},
+			journal: {
+				type: "Value",
+				label: "Journal",
+				store: new Value()
+			},
+			volume: {
+				type: "JournalVolume",
+				label: "Volume",
+				store: new JournalVolume()
+			},
+			pages: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) {{title}}. <i>{{journal}}</i>. {{volume}}, {{pages}}.`,
+			inline: `{{authors}} ({{year}}, {{pages}})`
+		}
 	},
 	"J-E": {
 		type: "Journal articles",
 		subtype: "Electronic",
 		label: "[J-E] Journal articles (Electronic)",
-		tooltips: ["J", "E"]
+		tooltips: ["J", "E"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title of the article",
+				store: new Value()
+			},
+			journal: {
+				type: "Value",
+				label: "Journal",
+				store: new Value()
+			},
+			volume: {
+				type: "JournalVolume",
+				label: "Volume",
+				store: new JournalVolume()
+			},
+			pages: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) {{title}}. <i>{{journal}}</i> [online]. {{volume}}, {{pages}}. [Accessed {{accessed}}].`,
+			inline: `{{authors}} ({{year}}, {{pages}})`
+		}
 	},
 	"J-JPP": {
 		type: "Journal articles",
 		subtype: "Journal articles (pre-publication) in digital repositories",
 		label: "[J-JPP] Journal articles (Journal articles (pre-publication) in digital repositories)",
-		tooltips: ["J", "JPP"]
+		tooltips: ["J", "JPP"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			title: {
+				type: "Value",
+				label: "Title of the article",
+				store: new Value()
+			},
+			journal: {
+				type: "Value",
+				label: "Journal",
+				store: new Value()
+			},
+			url: {
+				type: "Value",
+				label: "URL",
+				store: new Value()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) {{title}}. To be published in <i>{{journal}}</i> [preprint]. Available from: {{url}} [Accessed {{accessed}}].`,
+			inline: `({{authors}}, {{pages}})`
+		}
 	},
 	"J-JRP": {
 		type: "Journal articles",
 		subtype: "Journal article reprint",
 		label: "[J-JRP] Journal articles (Journal article reprint)",
-		tooltips: ["J", "JRP"]
+		tooltips: ["J", "JRP"],
+		schema: {
+			authors: {
+				type: "Author",
+				label: "Authors",
+				store: []
+			},
+			year: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			reprintOf: {
+				type: "Value",
+				label: "Reprint of (article)",
+				store: new Value()
+			},
+			journal: {
+				type: "Value",
+				label: "Journal",
+				store: new Value()
+			},
+			volume: {
+				type: "JournalVolume",
+				label: "Volume",
+				store: new JournalVolume()
+			},
+			pages: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			},
+			inJournal: {
+				type: "Value",
+				label: "In (journal)",
+				store: new Value()
+			},
+			inYear: {
+				type: "Value",
+				label: "Year of publication",
+				store: new Value()
+			},
+			inVolume: {
+				type: "JournalVolume",
+				label: "Volume",
+				store: new JournalVolume()
+			},
+			inPages: {
+				type: "Pages",
+				label: "Pages",
+				store: new Pages()
+			},
+			accessed: {
+				type: "DateProp",
+				label: "Accessed",
+				store: new DateProp()
+			}
+		},
+		formats: {
+			reference: `{{authors}} ({{year}}) Reprint of: {{title}}. <i>{{journal}}</i> [online]. {{volume}}, {{pages}}. In: {{inJournal}} ({{inYear}}). {{inVolume}}, {{inPages}}. [Accessed {{accessed}}].`,
+			inline: `{{authors}} ({{year}})`
+		}
 	},
 	"L-LR": {
 		type: "Law reports (cases)",
@@ -1251,4 +2450,4 @@ console.log(schema)
 ReactDOM.render(
 	<Result format="reference" type={schema.type} data={schema.data} />,
 	document.getElementById("root")
-) 
+)

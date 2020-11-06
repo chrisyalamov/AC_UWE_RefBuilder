@@ -16,7 +16,10 @@
     "watch-jsx-node": "parcel watch --log-level 1 --target node --out-dir views/node views/*.jsx",
     "watch-jsx": "concurrently 'npm:watch-jsx-browser' 'npm:watch-jsx-node'",
     "watch": "concurrently -i 'npm:watch-server' 'npm:watch-jsx-browser' 'npm:watch-jsx-node'",
-    "lint": "eslint app.js routes"
+    "lint": "eslint app.js routes",
+    "buildBuilderScript": "npx browserify ./public/scripts/builder.js > ./public/scripts/builder_bundle.js -t [babelify --presets [@babel/preset-env @babel/preset-react]] --fast",
+    "buildRefScript": "npx browserify ./public/scripts/ref.js > ./public/scripts/ref_bundle.js -t [babelify --presets [@babel/preset-env @babel/preset-react]] --fast",
+    "buildCiteScript": "npx browserify ./public/scripts/cite.js > ./public/scripts/cite_bundle.js -t [babelify --presets [@babel/preset-env @babel/preset-react]] --fast"
   },
   "dependencies": {
     "@atlaskit/button": "^15.1.1",
