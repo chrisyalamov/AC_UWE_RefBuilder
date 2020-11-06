@@ -1,0 +1,491 @@
+﻿.PL {
+    --col: #031d44
+}
+
+.A {
+    --col: #04395e
+}
+
+.BL {
+    --col: #08415c
+}
+
+.BC {
+    --col: #09814a
+}
+
+.B {
+    --col: #09814a
+}
+
+.CN {
+    --col: #0d0630
+}
+
+.CR {
+    --col: #0ead69
+}
+
+.G {
+    --col: #121619
+}
+
+.C {
+    --col: #16262e
+}
+
+.D {
+    --col: #18314f
+}
+
+.DTG {
+    --col: #18314f
+}
+
+.XHB {
+    --col: #04395e
+}
+
+.FV {
+    --col: #2176ff
+}
+
+.CLP {
+    --col: #031d44
+}
+
+.I {
+    --col: #2b4162
+}
+
+.IVW {
+    --col: #2d4739
+}
+
+.J {
+    --col: #2e4756
+}
+
+.L {
+    --col: #031d44
+}
+
+.LF {
+    --col: #2f1000
+}
+
+.LC {
+    --col: #16262e
+}
+
+.LV {
+    --col: #31393c
+}
+
+.LY {
+    --col: #31393c
+}
+
+.MAP {
+    --col: #3c7a89
+}
+
+.EQ {
+    --col: #3d348b
+}
+
+.MBD {
+    --col: #42cafd
+}
+
+.MF {
+    --col: #443730
+}
+
+.MR {
+    --col: #447604
+}
+
+.MM {
+    --col: #16262e
+}
+
+.MS {
+    --col: #31393c
+}
+
+.NW {
+    --col: #47624f
+}
+
+.OP {
+    --col: #447604
+}
+
+.PR {
+    --col: #447604
+}
+
+.PAT {
+    --col: #384e77
+}
+
+.PC {
+    --col: #385f71
+}
+
+.PG {
+    --col: #2b4162
+}
+
+.PD {
+    --col: #388697
+}
+
+.PDC {
+    --col: #31393c
+}
+
+.PSD {
+    --col: #2f1000
+}
+
+.CC {
+    --col: #16262e
+}
+
+.RD {
+    --col: #31393c
+}
+
+.REP {
+    --col: #18314f
+}
+
+.ST {
+    --col: #3bceac
+}
+
+.SN {
+    --col: #2a2c24
+}
+
+.SFW {
+    --col: #2a2c24
+}
+
+.S {
+    --col: #384e77
+}
+
+.SI {
+    --col: #031d44
+}
+
+.TV {
+    --col: #2176ff
+}
+
+.TH {
+    --col: #33a1fd
+}
+
+.W {
+    --col: #2a2c24
+}
+
+.P {
+    --col: #7678ed
+}
+
+.E {
+    --col: #e91286
+}
+
+.GL {
+    --col: #9AADBF
+}
+
+.MV {
+    --col: #786452
+}
+
+.DR {
+    --col: #f7b801
+}
+
+.R {
+    --col: #7678ed
+}
+
+.T {
+    --col: #f79824
+}
+
+.MVB {
+    --col: #786452
+}
+
+.ATH {
+    --col: #7678ed
+}
+
+.K {
+    --col: #e91286
+}
+
+.F {
+    --col: #e91286
+}
+
+.CP {
+    --col: #7699d4
+}
+
+.DW {
+    --col: #e91286
+}
+
+.PP {
+    --col: #7678ed
+}
+
+.PROC {
+    --col: #7678ed
+}
+
+.PON {
+    --col: #823329
+}
+
+.PDR {
+    --col: #823329
+}
+
+.AK {
+    --col: #ffac45
+}
+
+.AN {
+    --col: #b12828
+}
+
+.DVD {
+    --col: #816c61
+}
+
+.DVDE {
+    --col: #816c61
+}
+
+.FI {
+    --col: #823329
+}
+
+.VI {
+    --col: #823329
+}
+
+.FVD {
+    --col: #b5bfa1
+}
+
+.RXB {
+    --col: #23395B
+}
+
+.LR {
+    --col: #bcb382
+}
+
+.NCIT {
+    --col: #bfb8ad
+}
+
+.HANS {
+    --col: #c75000
+}
+
+.LEC {
+    --col: #ca7df9
+}
+
+.LNO {
+    --col: #cc2936
+}
+
+.LCO {
+    --col: #cfcfea
+}
+
+.LDA {
+    --col: #d5896f
+}
+
+.LPL {
+    --col: #d7b377
+}
+
+.BUL {
+    --col: #dab785
+}
+
+.BUW {
+    --col: #dbc2cf
+}
+
+.MDS {
+    --col: #e06c9f
+}
+
+.CLS {
+    --col: #e5c687
+}
+
+.POP {
+    --col: #A15E49
+}
+
+.MDW {
+    --col: #FF4242
+}
+
+.SEF {
+    --col: #4E3822
+}
+
+.PLA {
+    --col: #edbfb7
+}
+
+.POA {
+    --col: #26532B
+}
+
+.VCD {
+    --col: #ee4266
+}
+
+.IBK {
+    --col: #f06c9b
+}
+
+.PLE {
+    --col: #5E7CE2
+}
+
+.PDE {
+    --col: #f18701
+}
+
+. {
+    --col:
+}
+
+    .PH {
+        --col: #f35b04
+    }
+
+    .VDC {
+        --col: #3C3C3B
+    }
+
+    .SCS {
+        --col: #6D98BA
+    }
+
+    .RA {
+        --col: #f79824
+    }
+
+    .IN {
+        --col: #823329
+    }
+
+    .RPP {
+        --col: #8eb19d
+    }
+
+    .RPE {
+        --col: #8f754f
+    }
+
+    .FR {
+        --col: #636940
+    }
+
+    .MSP {
+        --col: #9448bc
+    }
+
+    .MSE {
+        --col: #945600
+    }
+
+    .TR {
+        --col: #96c9dc
+    }
+
+    .BIB {
+        --col: #972d07
+    }
+
+    .QUR {
+        --col: #998888
+    }
+
+    .TOR {
+        --col: #9fa2b2
+    }
+
+    .EP {
+        --col: #28666E
+    }
+
+    .OFF {
+        --col: #a5907e
+    }
+
+    .SER {
+        --col: #a89b9d
+    }
+
+    .EPI {
+        --col: #823329
+    }
+
+    .OFI {
+        --col: #823329
+    }
+
+    .SRI {
+        --col: #823329
+    }
+
+    .EDV {
+        --col: #816c61
+    }
+
+    .BXS {
+        --col: #816c61
+    }
+
+    .OFD {
+        --col: #816c61
+    }
+
+    .SDV {
+        --col: #816c61
+    }
+
+    .WP {
+        --col: #823329
+    }
+
+    .IW {
+        --col: #8a3033
+    }
+
+    .WIKI {
+        --col: #8bbeb2
+    }

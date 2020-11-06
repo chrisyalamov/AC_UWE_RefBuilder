@@ -1,0 +1,71 @@
+{
+    "key": "refbuilder-staging",
+    "name": "Reference Builder (Staging)",
+    "description": "An alpha version of the UWE Bristol Harvard Reference Builder macro.",
+    "baseUrl": "{{localBaseUrl}}",
+    "authentication": {
+        "type": "jwt"
+    },
+    "lifecycle": {
+        "installed": "/installed"
+    },
+    "scopes": [
+        "READ"
+    ],
+  "modules": {
+    "dynamicContentMacros": [
+      {
+        "key": "uwe-ref",
+        "name": {
+          "value": "Reference"
+        },
+        "url": "/ref?schema={schema}",
+        "description": {
+          "value": "UWE Bristol Harvard-formatted reference for use in a bibliography."
+        },
+        "outputType": "block",
+        "parameters": [
+          {
+            "identifier": "schema",
+            "name": {
+              "value": "Schema"
+            },
+            "description": {
+              "value": "Stringified JSON representing the schema of the reference"
+            },
+            "type": "string",
+            "required": true
+          }
+        ],
+        "editor": {
+          "url": "/builder",
+          "editTitle": {
+            "value": "Reference builder"
+          },
+          "insertTitle": {
+            "value": "Reference builder"
+          },
+          "width": "750px",
+          "height": "550px",
+          "chrome": false
+        },
+        "icon": {
+          "width": 16,
+          "height": 16,
+          "url": "https://style.uwe.ac.uk/branding/couplets/engine/images/logo.png"
+        }
+      },
+      {
+        "url": "/myMacro?macroId={macro.id}&pageId={page.id}&pageVersion={page.version}",
+        "description": {
+          "value": "Allow users to add a background color around selected content."
+        },
+        "bodyType": "rich-text",
+        "name": {
+          "value": "My macro"
+        },
+        "key": "my-macro"
+      }
+    ]
+  }
+}

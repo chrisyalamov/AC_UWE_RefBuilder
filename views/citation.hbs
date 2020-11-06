@@ -1,0 +1,14 @@
+{{!< layout}}
+{{body}}
+<div id="root" ac-content="ac-content" style="margin:0; padding: 0; display: inline"></div>
+<script>
+    window.schema = {
+        type: `{{{type}}}`,
+        data: `{{{data}}}`
+    };
+    console.log(window.schema)
+</script>
+<script src="scripts/cite_bundle.js"></script>
+<!-- <script>
+    AP.resize(document.getElementById("root").offsetWidth + "px", document.getElementById("root").offsetHeight + "px")
+</script> -->

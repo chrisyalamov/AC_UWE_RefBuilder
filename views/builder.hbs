@@ -1,0 +1,34 @@
+{{!< layout}}
+<section id="header">
+    <img id="logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/1/11/UWE_Bristol_logo.svg/1280px-UWE_Bristol_logo.svg.png" height="50" />
+    <h4 style="margin-bottom: 5px; font-weight: 400;">UWE Bristol Harvard</h4>
+    <h1 style="margin-top: 0">Reference Builder</h1>
+</section>
+<section id="disclaimer">
+    <span style="font-size: 0.75em">Use this tool to build a reference in the UWE Bristol Harvard format. You should not fully trust this tool to generate correct references and should always only trust the style guide of the University. Always remember to use the SafeAssign checker before submitting an assignment.</span>
+</section>
+<div id="root"></div>
+<div id="ref"></div>
+<div id="renderHolder"></div>
+<script>
+    window.copyText = function (text) {
+        var temp = document.createElement("input");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        temp.remove();
+    }
+</script>
+<script src="scripts/builder_bundle.js"></script>
+<script>
+    console.log(window.result)
+    AP.require(["confluence", "dialog"], function (confluence, dialog) {
+        dialog.getButton("submit").bind(function () {
+            confluence.saveMacro({ 'schema': window.result });
+
+            confluence.closeMacroEditor();
+            return true;
+        });
+    });
+</script>

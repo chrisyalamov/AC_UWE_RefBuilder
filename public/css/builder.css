@@ -1,0 +1,100 @@
+﻿section {
+    margin-bottom: 40px;
+}
+
+#header {
+    background-color: #f2f8fa;
+    padding: 40px;
+    padding-bottom: 10px;
+}
+
+#logo {
+    margin-top: -40px;
+    display: block;
+    float: right;
+}
+
+.tooltip {
+    position: relative;
+    top: -30px;
+    display: inline-block;
+    margin-right: 10px;
+    height: 30px;
+    text-align: center;
+    border-radius: 8px;
+    padding: 2px 10px;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 1.2em;
+    background-color: var(--col, #3b3b3b);
+    box-shadow: 0 5px 20px -5px var(--col, #000);
+}
+
+.buildBlock {
+    background-color: #f2f8fa;
+    border-radius: 5px;
+    padding: 20px 30px 0 30px;
+}
+
+button {
+    margin-top: 10px;
+}
+
+.field {
+    padding-bottom: 10px;
+}
+
+.container {
+    margin-left: -30px;
+    width: calc(100% + 60px);
+    display: flex;
+    margin-top: -55px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.infopane {
+    padding-left: 30px;
+    padding-right: 30px;
+    flex-basis: 300px;
+    padding-top: 50px;
+    background-color: #253f4a;
+    min-width: 250px;
+}
+
+.infopane > h4, .infopane > h1 {
+    color: #fff;
+}
+
+.referenceBuilder {
+    padding: 30px;
+    width: -webkit-fill-available;
+}
+
+.referenceResult {
+    background-color: #f8f8f8;
+    border-radius: 6px;
+    display: inline;
+    width: fit-content;
+    font-size: 14px;
+}
+
+.tooltip.small {
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+    display: inline;
+    font-size: 1em;
+    position: relative;
+    top: 0;
+    height: auto;
+    padding: 0 8px;
+}
+
+.tooltip.small:first-of-type {border-radius: 6px 0 0 6px;}
+
+@media screen and (max-width: 650px) {
+    .container {
+        flex-direction: column;
+    }
+}
