@@ -2321,7 +2321,7 @@ class Reference extends React.Component {
 function copyToClip(str) {
 	function listener(e) {
 		e.clipboardData.setData("text/html", str);
-		e.clipboardData.setData("text/plain", str);
+		// e.clipboardData.setData("text/plain", str);
 		e.preventDefault();
 	}
 	document.addEventListener("copy", listener);
@@ -2514,4 +2514,4 @@ class App extends React.Component {
 ReactDOM.render(
 	<App />,
 	document.getElementById("root")
-) 
+)
