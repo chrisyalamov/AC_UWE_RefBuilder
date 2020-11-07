@@ -2321,7 +2321,7 @@ class Reference extends React.Component {
 function copyToClip(str) {
 	function listener(e) {
 		e.clipboardData.setData("text/html", str);
-		// e.clipboardData.setData("text/plain", str);
+		e.clipboardData.setData("text/plain", str.replace("<i>","").replace("</i>",""));
 		e.preventDefault();
 	}
 	document.addEventListener("copy", listener);
